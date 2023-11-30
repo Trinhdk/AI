@@ -1,0 +1,52 @@
+import numpy as np
+
+class LinearRegression:
+    def __init__(self, learning_rate=0.01, iterations=1000):
+        self.learning_rate = learning_rate
+        self.iterations = iterations
+        self.weights = None
+        self.bias = None
+
+    def fit(self, X, y):
+        num_samples, num_features = X.shape
+        self.weights = np.zeros(num_features)
+        self.bias = 0
+
+        for _ in range(self.iterations):
+            # Compute predictions
+            y_predicted = np.dot(X, self.weights) + self.bias
+
+            # Compute gradients
+            d_weights = (1 / num_samples) * np.dot(X.T, (y_predicted - y))
+            d_bias = (1 / num_samples) * np.sum(y_predicted - y)
+
+            # Update weights and bias
+            self.weights -= self.learning_rate * d_weights
+            self.bias -= self.learning_rate * d_bias
+
+    def predict(self, X):
+        return np.dot(X, self.weights) + self.bias
+
+    def computeCost(self, X, y):
+        num_samples = len(y)
+        y_predicted = np.dot(X, self.weights) + self.bias
+        cost = (1 / (2 * num_samples)) * np.sum((y_predicted - y) ** 2)
+        return cost
+
+    def gradientDescent(self, X, y):
+        num_samples = len(y)
+        cost_history = []
+
+        for _ in range(self.iterations):
+            y_predicted = np.dot(X, self.weights) + self.bias
+
+            d_weights = (1 / num_samples) * np.dot(X.T, (y_predicted - y))
+            d_bias = (1 / num_samples) * np.sum(y_predicted - y)
+
+            self.weights -= self.learning_rate * d_weights
+            self.bias -= self.learning_rate * d_bias
+
+            cost = (1 / (2 * num_samples)) * np.sum((y_predicted - y) ** 2)
+            cost_history.append(cost)
+
+        return cost_history
